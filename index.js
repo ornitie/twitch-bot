@@ -16,6 +16,11 @@
           (element) => element.ariaLabel === RewardsButton
         );
       }
+        
+        function setMessage(message){
+        const textBox = Array.from(document.getElementsByTagName("textArea"))
+        textBox.value = "KEKW";
+        }
 
       function x() {
         console.log(":V");
