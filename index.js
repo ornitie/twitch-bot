@@ -16,17 +16,25 @@
           (element) => element.ariaLabel === RewardsButton
         );
       }
-        
-        function setMessage(message){
-        const textBox = Array.from(document.getElementsByTagName("textArea"))
+
+      function getGuessButton() {
+        return Array.from(document.getElementsByTagName("p")).find(
+          (element) => element.innerHTML == "Guess a number 1 - 1 million"
+        );
+      }
+
+      function setMessage(message) {
+        const textBox = Array.from(document.getElementsByTagName("textArea"));
         textBox.value = "KEKW";
-        }
+      }
 
       function x() {
         console.log(":V");
       }
 
       getButton().click();
+      getGuessButton().click();
+      setMessage();
       x();
       console.log("YEAH");
     }, 3000);
