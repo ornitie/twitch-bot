@@ -28,7 +28,7 @@
           persistedQuery: {
             version: 1,
             sha256Hash:
-              "bb187d763156dc5c25c6457e1b32da6c5033cb7504854e6d33a8b876d10444b6",
+              "d56249a7adb4978898ea3412e196688d4ac3cea1c0c2dfd65561d229ea5dcc42",
           },
         },
       },
@@ -37,7 +37,7 @@
 
   function getAuthorization() {
     return document.cookie
-      .split(";")
+      .split("; ")
       .find((element) => element.startsWith("auth-token"))
       .split("=")[1];
   }
