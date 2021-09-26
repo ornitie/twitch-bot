@@ -34,18 +34,17 @@
     return { id, isEnabled, isInStock, isPaused, prompt, title, cost };
   }
 
-  function generatePayload() {
+  function generatePayload(id, prompt, title, cost) {
     return [
       {
         operationName: "RedeemCustomReward",
         variables: {
           input: {
             channelID: channelID,
-            rewardID: "055d3993-f7d6-416a-b403-7a8265da99de",
-            title: "Guess a number 1 - 1 million",
-            cost: 1,
-            prompt:
-              "Guess the correct number and win $1900!  Make sure your message is ONLY the number you wish to guess, no commas, letters, decimals etc.",
+            rewardID: id,
+            title,
+            cost,
+            prompt,
             textInput: (Math.floor(Math.random() * (999999 - 1)) + 1).toString(),
             transactionID: "aa71cbb5cd22e9165ah92a" + (Math.random() + 1).toString(36).substring(2),
           },
@@ -89,7 +88,11 @@
           return new Promise((res) => setTimeout(res, ms));
         }
 
-        let response = await postData(TWITCH_URL, generatePayload(), getAuthorization());
+        let response = await postData(
+          TWITCH_URL,
+          generatePayload(id, prompt, title, cost),
+          getAuthorization()
+        );
 
         console.log(response);
 
