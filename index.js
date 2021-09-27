@@ -4,6 +4,15 @@
   const channelID = "95416766";
   const clientID = "kimne78kx3ncx6brgo4mv6wki5h1ko";
   const TWITCH_URL = "https://gql.twitch.tv/gql";
+  const TWENTY_POO = "https://cpt-api.twentypoo.com/numberGuesses/";
+  const COOKIE =
+    "SID=s%3AVLtd_zk3K8ZHv70X4VZPJBe7tAv_0r2G.f6mUm2BeS1IKX7mpWxvcnO7jQqUDsl6W4%2FOMsdnPsSs";
+
+  async function isNumberValid(number) {
+    const data = await getData(`${TWENTY_POO}${number}`);
+
+    return number.length == 0;
+  }
 
   async function getChannelRewardData() {
     const payload = [
@@ -34,7 +43,18 @@
     return { id, isEnabled, isInStock, isPaused, prompt, title, cost };
   }
 
+  async function generateNumber() {
+    while (true) {
+      const number = Math.floor(Math.random() * (999999 - 1)) + 1;
+      const isValid = await isNumberValid(number);
+      if (isValid) {
+        return number;
+      }
+    }
+  }
+
   function generatePayload(id, prompt, title, cost) {
+    const number = await generateNumber();
     return [
       {
         operationName: "RedeemCustomReward",
@@ -45,7 +65,7 @@
             title,
             cost,
             prompt,
-            textInput: (Math.floor(Math.random() * (999999 - 1)) + 1).toString(),
+            textInput: number.toString(),
             transactionID: "aa71cbb5cd22e9165ah92a" + (Math.random() + 1).toString(36).substring(2),
           },
         },
@@ -76,6 +96,16 @@
       },
       body: JSON.stringify(data),
     });
+
+    return response.json();
+  }
+
+  async function getData(url = "", headers) {
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+
     return response.json();
   }
 
