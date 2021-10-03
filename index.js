@@ -33,7 +33,7 @@
 
     return { id, isEnabled, isInStock, isPaused, prompt, title, cost };
   }
-
+  
   function generatePayload(id, prompt, title, cost) {
     return [
       {
@@ -87,7 +87,6 @@
         function timer(ms) {
           return new Promise((res) => setTimeout(res, ms));
         }
-
         let response = await postData(
           TWITCH_URL,
           generatePayload(id, prompt, title, cost),
