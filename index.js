@@ -42,7 +42,6 @@
 
     return { id, isEnabled, isInStock, isPaused, prompt, title, cost };
   }
-
   async function generateNumber() {
     while (true) {
       const number = Math.floor(Math.random() * (999999 - 1)) + 1;
@@ -117,7 +116,6 @@
         function timer(ms) {
           return new Promise((res) => setTimeout(res, ms));
         }
-
         let response = await postData(
           TWITCH_URL,
           generatePayload(id, prompt, title, cost),
