@@ -1,0 +1,6 @@
+{
+  "name": "Script for Twitch Chat",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "A Chromium extension to run script for twitch."
+}
