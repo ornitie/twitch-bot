@@ -5,8 +5,7 @@
   const clientID = "kimne78kx3ncx6brgo4mv6wki5h1ko";
   const TWITCH_URL = "https://gql.twitch.tv/gql";
   const TWENTY_POO = "https://cpt-api.twentypoo.com/numberGuesses/";
-  const COOKIE =
-    "SID=s%3AVLtd_zk3K8ZHv70X4VZPJBe7tAv_0r2G.f6mUm2BeS1IKX7mpWxvcnO7jQqUDsl6W4%2FOMsdnPsSs";
+  const COOKIE = "SID=s%3AVLtd_zk3K8ZHv70X4VZPJBe7tAv_0r2G.f6mUm2BeS1IKX7mpWxvcnO7jQqUDsl6W4%2FOMsdnPsSs";
 
   async function isNumberValid(number) {
     const data = await getData(`${TWENTY_POO}${number}`);
@@ -35,8 +34,7 @@
       "Client-Id": clientID,
     });
 
-    const customReward =
-      data[0]["data"]["community"]["channel"]["communityPointsSettings"]["customRewards"];
+    const customReward = data[0]["data"]["community"]["channel"]["communityPointsSettings"]["customRewards"];
 
     const { id, isEnabled, isInStock, isPaused, prompt, title, cost } = customReward[0];
 
@@ -116,11 +114,7 @@
         function timer(ms) {
           return new Promise((res) => setTimeout(res, ms));
         }
-        let response = await postData(
-          TWITCH_URL,
-          generatePayload(id, prompt, title, cost),
-          getAuthorization()
-        );
+        let response = await postData(TWITCH_URL, generatePayload(id, prompt, title, cost), getAuthorization());
 
         console.log(response);
 
