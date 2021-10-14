@@ -1,0 +1,19 @@
+{
+  "name": "twitch-chat-script",
+  "version": "1.0.0",
+  "description": "Twitch Script for rewards",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ornitie/twitch-chat-script.git"
+  },
+  "author": "ornitie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ornitie/twitch-chat-script/issues"
+  },
+  "homepage": "https://github.com/ornitie/twitch-chat-script#readme"
+}
