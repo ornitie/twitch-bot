@@ -10,12 +10,12 @@ const channelID = "95416766";
 const clientID = "kimne78kx3ncx6brgo4mv6wki5h1ko";
 const TWITCH_URL = "https://gql.twitch.tv/gql";
 const TWENTY_POO = "https://cpt-api.twentypoo.com/numberGuesses/";
-const COOKIE = "SID=s%3AVLtd_zk3K8ZHv70X4VZPJBe7tAv_0r2G.f6mUm2BeS1IKX7mpWxvcnO7jQqUDsl6W4%2FOMsdnPsSs";
+const COOKIE = "SID=s%3A3f7SFgyJIaIDxjwylIRUWhm707B-9G_q.1IwYpCgT%2FBnD2cKwKa6l3H2qb2axPvp4eY4Jr9KWsNw";
 
 async function isNumberValid(number) {
-  const data = await getData(`${TWENTY_POO}${number}`);
+  const data = await getData(`${TWENTY_POO}${number}`, { cookie: COOKIE });
 
-  return number.length == 0;
+  return data.length == 0;
 }
 
 async function getChannelRewardData() {
@@ -35,9 +35,7 @@ async function getChannelRewardData() {
     },
   ];
 
-  const data = await postData(TWITCH_URL, payload, getAuthorization(), {
-    "Client-Id": clientID,
-  });
+  const data = await postData(TWITCH_URL, payload, token, { "Client-Id": clientID });
 
   const customReward = data[0]["data"]["community"]["channel"]["communityPointsSettings"]["customRewards"];
 
@@ -57,6 +55,7 @@ async function generateNumber() {
 
 async function generatePayload(id, prompt, title, cost) {
   const number = await generateNumber();
+  console.log(`Trying ${number}`);
   return [
     {
       operationName: "RedeemCustomReward",
@@ -81,10 +80,6 @@ async function generatePayload(id, prompt, title, cost) {
   ];
 }
 
-function getAuthorization() {
-  return token;
-}
-
 async function postData(url = "", data = {}, authorization = "", headers = "") {
   return axios
     .post(url, data, {
@@ -95,7 +90,6 @@ async function postData(url = "", data = {}, authorization = "", headers = "") {
       },
     })
     .then((response) => {
-      console.log("success");
       return response.data;
     })
     .catch((error) => {
@@ -109,7 +103,7 @@ async function getData(url = "", headers) {
     .then((response) => {
       console.log(response.data.url);
       console.log(response.data.explanation);
-      return response.json();
+      return response.data;
     })
     .catch((error) => {
       console.log(`GET request failed: ${error}`);
@@ -117,20 +111,18 @@ async function getData(url = "", headers) {
 }
 
 async function main() {
-  await setTimeout(async function () {
-    const rewardData = await getChannelRewardData();
-    const { id, isEnabled, isInStock, isPaused, prompt, title, cost } = rewardData;
-    while (isEnabled && isInStock && !isPaused) {
-      function timer(ms) {
-        return new Promise((res) => setTimeout(res, ms));
-      }
-      let response = await postData(TWITCH_URL, generatePayload(id, prompt, title, cost), getAuthorization());
-
-      console.log(response);
-
-      await timer(3000);
+  const rewardData = await getChannelRewardData();
+  const { id, isEnabled, isInStock, isPaused, prompt, title, cost } = rewardData;
+  while (true || (isEnabled && isInStock && !isPaused)) {
+    function timer(ms) {
+      return new Promise((res) => setTimeout(res, ms));
     }
-  }, 3000);
+    let response = await postData(TWITCH_URL, generatePayload(id, prompt, title, cost), token);
+
+    console.log(response);
+
+    await timer(1000);
+  }
 }
 
 main();
