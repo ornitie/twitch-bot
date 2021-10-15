@@ -1,4 +1,5 @@
 const prompt = require("prompt-sync")({ sigint: true });
+const axios = require("axios");
 
 ("use strict");
 
@@ -85,39 +86,51 @@ function getAuthorization() {
 }
 
 async function postData(url = "", data = {}, authorization = "", headers = "") {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `OAuth ${authorization}`,
-      ...headers,
-    },
-    body: JSON.stringify(data),
-  });
-
-  return response.json();
+  return axios
+    .post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `OAuth ${authorization}`,
+        ...headers,
+      },
+    })
+    .then((response) => {
+      console.log("success");
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(`POST request failed: ${error}`);
+    });
 }
 
 async function getData(url = "", headers) {
-  const response = await fetch(url, {
-    method: "GET",
-    headers,
-  });
-
-  return response.json();
+  return axios
+    .get(url, { headers })
+    .then((response) => {
+      console.log(response.data.url);
+      console.log(response.data.explanation);
+      return response.json();
+    })
+    .catch((error) => {
+      console.log(`GET request failed: ${error}`);
+    });
 }
 
-setTimeout(async function () {
-  const rewardData = await getChannelRewardData();
-  const { id, isEnabled, isInStock, isPaused, prompt, title, cost } = rewardData;
-  while (isEnabled && isInStock && !isPaused) {
-    function timer(ms) {
-      return new Promise((res) => setTimeout(res, ms));
+async function main() {
+  await setTimeout(async function () {
+    const rewardData = await getChannelRewardData();
+    const { id, isEnabled, isInStock, isPaused, prompt, title, cost } = rewardData;
+    while (isEnabled && isInStock && !isPaused) {
+      function timer(ms) {
+        return new Promise((res) => setTimeout(res, ms));
+      }
+      let response = await postData(TWITCH_URL, generatePayload(id, prompt, title, cost), getAuthorization());
+
+      console.log(response);
+
+      await timer(3000);
     }
-    let response = await postData(TWITCH_URL, generatePayload(id, prompt, title, cost), getAuthorization());
+  }, 3000);
+}
 
-    console.log(response);
-
-    await timer(3000);
-  }
-}, 3000);
+main();
