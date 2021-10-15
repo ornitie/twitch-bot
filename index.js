@@ -50,7 +50,7 @@
     }
   }
 
-  function generatePayload(id, prompt, title, cost) {
+  async function generatePayload(id, prompt, title, cost) {
     const number = await generateNumber();
     return [
       {
