@@ -12,10 +12,14 @@ const TWITCH_URL = "https://gql.twitch.tv/gql";
 const TWENTY_POO = "https://cpt-api.twentypoo.com/numberGuesses/";
 const COOKIE = "SID=s%3A3f7SFgyJIaIDxjwylIRUWhm707B-9G_q.1IwYpCgT%2FBnD2cKwKa6l3H2qb2axPvp4eY4Jr9KWsNw";
 
-async function isNumberValid(number) {
-  const data = await getData(`${TWENTY_POO}${number}`, { cookie: COOKIE });
+function timer(ms) {
+  return new Promise((res) => setTimeout(res, ms));
+}
 
-  return data.length == 0;
+async function isNumberValid(number) {
+  return getData(`${TWENTY_POO}${number}`, { cookie: COOKIE }).then((data) => {
+    return data.length;
+  });
 }
 
 async function getChannelRewardData() {
@@ -46,9 +50,14 @@ async function getChannelRewardData() {
 async function generateNumber() {
   while (true) {
     const number = Math.floor(Math.random() * (999999 - 1)) + 1;
-    const isValid = await isNumberValid(number);
-    if (isValid) {
-      return number;
+    try {
+      const isValid = await isNumberValid(number);
+      if (isValid) {
+        return number;
+      }
+    } catch (e) {
+      console.log("Error calling the API");
+      await timer(3000);
     }
   }
 }
@@ -101,8 +110,6 @@ async function getData(url = "", headers) {
   return axios
     .get(url, { headers })
     .then((response) => {
-      console.log(response.data.url);
-      console.log(response.data.explanation);
       return response.data;
     })
     .catch((error) => {
@@ -113,13 +120,14 @@ async function getData(url = "", headers) {
 async function main() {
   const rewardData = await getChannelRewardData();
   const { id, isEnabled, isInStock, isPaused, prompt, title, cost } = rewardData;
-  while (true || (isEnabled && isInStock && !isPaused)) {
-    function timer(ms) {
-      return new Promise((res) => setTimeout(res, ms));
-    }
-    let response = await postData(TWITCH_URL, generatePayload(id, prompt, title, cost), token);
+  while (isEnabled && isInStock && !isPaused) {
+    const payload = await generatePayload(id, prompt, title, cost);
 
-    console.log(response);
+    console.log("Request: ", JSON.stringify(payload));
+
+    let response = await postData(TWITCH_URL, payload, token);
+
+    console.log("Response: ", JSON.stringify(response));
 
     await timer(1000);
   }
