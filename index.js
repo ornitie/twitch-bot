@@ -12,6 +12,8 @@ const TWITCH_URL = "https://gql.twitch.tv/gql";
 const TWENTY_POO = "https://cpt-api.twentypoo.com/numberGuesses/";
 const COOKIE = "SID=s%3A3f7SFgyJIaIDxjwylIRUWhm707B-9G_q.1IwYpCgT%2FBnD2cKwKa6l3H2qb2axPvp4eY4Jr9KWsNw";
 
+const cache = {};
+
 function timer(ms) {
   return new Promise((res) => setTimeout(res, ms));
 }
@@ -51,7 +53,12 @@ async function generateNumber() {
   while (true) {
     const number = Math.floor(Math.random() * (999999 - 1)) + 1;
     try {
+      if (cache[number]) {
+        continue;
+      }
       const isValid = await isNumberValid(number);
+
+      cache[number] = true;
       if (isValid) {
         return number;
       }
