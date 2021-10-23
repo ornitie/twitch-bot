@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ornitie/twitch-chat-script/issues"
   },
-  "homepage": "https://github.com/ornitie/twitch-chat-script#readme"
+  "homepage": "https://github.com/ornitie/twitch-chat-script#readme",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
 }
