@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ornitie/twitch-chat-script#readme",
   "dependencies": {
+    "axios": "^0.23.0",
     "prompt-sync": "^4.2.0"
   }
 }
